@@ -5,6 +5,7 @@ import java.util.Properties
 import com.atguigu.apitest.SensorReading
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.streaming.api.scala._
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer011.Semantic
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer011, FlinkKafkaProducer011}
 
 /**
@@ -43,7 +44,7 @@ object KafkaSinkTest {
       )
 
     // sink
-    dataStream.addSink( new FlinkKafkaProducer011[String]("localhost:9092", "sinkTest", new SimpleStringSchema()) )
+    dataStream.addSink( new FlinkKafkaProducer011[String]( "sinkTest", new SimpleStringSchema(), properties) )
     dataStream.print()
 
     env.execute("kafka sink test")

@@ -19,6 +19,9 @@ object StreamWordCount {
     val host: String = params.get("host")
     val port: Int = params.getInt("port")
 
+    //bash 打开命令窗口  输入 nc -lk 7777  可以往7777端口写数据
+
+
     // 创建一个流处理的执行环境
     val env = StreamExecutionEnvironment.getExecutionEnvironment
 //    env.setParallelism(1)
@@ -27,6 +30,8 @@ object StreamWordCount {
     // 接收socket数据流
     val textDataStream = env.socketTextStream(host, port)
 
+
+
     // 逐一读取数据，分词之后进行wordcount
     val wordCountDataStream = textDataStream.flatMap(_.split("\\s"))
       .filter(_.nonEmpty).startNewChain()
@@ -34,7 +39,7 @@ object StreamWordCount {
       .keyBy(0)
       .sum(1)
 
-    // 打印输出
+    // 打印输出  setParallelism(1)  设置线程的数量   默认并行度是当前机器的核数
     wordCountDataStream.print().setParallelism(1)
 
     // 执行任务

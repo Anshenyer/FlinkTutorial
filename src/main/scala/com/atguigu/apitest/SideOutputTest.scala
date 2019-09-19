@@ -43,20 +43,19 @@ object SideOutputTest {
     processedStream.getSideOutput( new OutputTag[String]("freezing alert") ).print("alert data")
 
 
-    env.execute("window test")
+    env.execute("side output test")
   }
 }
 
 // 冰点报警，如果小于32F，输出报警信息到侧输出流
 class FreezingAlert() extends ProcessFunction[SensorReading, SensorReading]{
 
-  lazy val alertOutput: OutputTag[String] = new OutputTag[String]( "freezing alert" )
+//  lazy val alertOutput: OutputTag[String] = new OutputTag[String]( "freezing alert" )
 
   override def processElement(value: SensorReading, ctx: ProcessFunction[SensorReading, SensorReading]#Context, out: Collector[SensorReading]): Unit = {
     if( value.temperature < 32.0 ){
-      ctx.output( alertOutput, "freezing alert for " + value.id )
-    } else {
-      out.collect( value )
+      ctx.output( new OutputTag[String]( "freezing alert" ), "freezing alert for " + value.id )
     }
+    out.collect( value )
   }
 }
